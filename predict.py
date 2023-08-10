@@ -40,7 +40,7 @@ def evaluate(graph, device, model):
 
       features= graph.ndata.pop("attr")
       logits = model(graph, features)
-      _, indices = torch.max(logits, 1)  #equivilant to argmax
+      indices = torch.max(logits, 1)  #equivilant to argmax
 
     return indices
 
@@ -206,8 +206,6 @@ def inductive_node_classifier(nodes,edges):
     #predicted_class_new=json.dump(list(predicted_class))
     #print(predicted_class)
 
-
-   # return f'predicted class is {predicted_class[0]} - {class_name}'
     return predicted_class_new
 
 def node_classifier(nodes,edges):
