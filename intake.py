@@ -1,4 +1,5 @@
 import json
+import requests
 import matplotlib.pyplot as plt
 from shapely.geometry import Polygon
 import compute_rhino3d.Util
@@ -6,7 +7,7 @@ import compute_rhino3d.Grasshopper as gh
 import rhino3dm
 
 compute_rhino3d.Util.url = "http://localhost:8081/"
-#compute_rhino3d.Util.apiKey = ""
+compute_rhino3d.Util.apiKey = ""
 
 defName = 'assets/FloorPlanGenerator_Combined.gh'
 
@@ -55,8 +56,9 @@ trees = [lineType_tree, vertices_tree, corr_tree, levels_tree]
 # print(trees_data)
 try:
     output = gh.EvaluateDefinition(defName, trees)
-    string_data = output[0].InnerTree.First().Value[0].Data
-    print(string_data)
+    # string_data = output[0].InnerTree.First().Value[0].Data
+    # print(string_data)
+    print(output)
 except Exception as e:
     print(f'Error running grasshopper file: {e}.')
 # decode results
@@ -66,7 +68,8 @@ except Exception as e:
 if output:
     # writing JSON data
     with open("assets/output.json", 'w') as f:
-        json.dump(string_data, f)
+        # json.dump(string_data, f)
+        json.dump(output, f)
 # Convert the dictionary to a JSON string
 # json_string = json.dumps(output, indent=4)
 # json_string = json.dumps(string, indent=4)
