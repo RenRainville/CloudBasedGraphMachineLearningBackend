@@ -1,6 +1,6 @@
 
-import numpy
-import rhino3dm
+import numpy as np
+# import rhino3dm
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -8,16 +8,56 @@ import dgl
 from dgl.nn import SAGEConv
 
 import json
-import math
+# import math
 import networkx as nx
 
 import matplotlib.pyplot as plt
 from flask import Flask
 import ghhops_server as hs
 from pyngrok import ngrok
-import threading
+# import threading
 
-model_path="[enter path to saved trained model]"
+model_path="assets/egress.pt"
+
+# Define intake of json and creation of node and edge, lists of lists, similar to taking them from the .csv into .json from python dict 
+
+def load_nodes_n_edges_json(filename):
+    """
+    Load nodes and edges from a JSON file and return them as lists of lists.
+
+    Parameters:
+    - filename (str): Path to the JSON file.
+
+    Returns:
+    - tuple: A tuple containing nodes coordinates, id, and degree as a list of lists and edge source, target, and length as a list of lists.
+    """
+    
+    # Read the data from the JSON file
+    with open(filename, 'r') as json_file:
+        data = json.load(json_file)
+
+    # Extract nodes and edges lists from the features key
+    node_data_list = data['features'][0][0]
+    print(node_data_list)
+    edge_data_list = data['features'][1][0]
+    print(edge_data_list)
+
+    # Extract specific attributes for nodes and edges
+    node_data = [[
+        node['node']['properties']['metadata']['geometry']['coordinates'][0],
+        node['node']['properties']['metadata']['geometry']['coordinates'][1],
+        node['node']['properties']['metadata']['geometry']['coordinates'][2],
+        node['node']['properties']['label'],
+        node['node']['properties']['degree']
+    ] for node in node_data_list]
+
+    edge_data = [[
+        edge['edge']['properties']['source'],
+        edge['edge']['properties']['target'],
+        edge['edge']['properties']['metadata']['length']
+    ] for edge in edge_data_list]
+
+    return node_data, edge_data
 
 # Define the same model class used to train the model
 class SAGE(nn.Module):
@@ -51,13 +91,13 @@ def inductive_node_classifier(nodes,edges):
     #1. BUILD THE GRAPH from the nodes and edges
 
     #deserialize
-    graph_nodes=[]
-    for n in nodes:
-        graph_nodes.append(json.loads(n))
+    graph_nodes=nodes
+    # for n in nodes:
+    #     graph_nodes.append(json.loads(n))
 
-    graph_edges=[]
-    for e in edges:
-        graph_edges.append(json.loads(e))
+    graph_edges=edges
+    # for e in edges:
+    #     graph_edges.append(json.loads(e))
 
     #Create an edge list for each graph from the edges dataframe
     graph_edge_list=[[graph_edges[i][0], graph_edges[i][1]] for i in range(len(graph_edges))]  #Notice that the incident nodes must be the first two elements of each list
@@ -208,6 +248,20 @@ def inductive_node_classifier(nodes,edges):
 
     return predicted_class_new
 
-def node_classifier(nodes,edges):
+def node_classifier(nodes=None, edges=None):
 
-    return inductive_node_classifier(nodes,edges)
+    # If nodes and edges aren't provided, load them from the JSON
+    if nodes is None or edges is None:
+        nodes, edges = load_nodes_n_edges_json('assets/output.json')
+
+    return inductive_node_classifier(nodes, edges)
+
+if __name__ == "__main__":
+    predictions = node_classifier()
+    
+    # Create a dictionary of node indices and their predicted classes
+    prediction_dict = {idx: predicted_class for idx, predicted_class in enumerate(predictions)}
+    
+    # Save the dictionary to a JSON file
+    with open('assets/predicted_classes.json', 'w') as json_file:
+        json.dump(prediction_dict, json_file, indent=4)

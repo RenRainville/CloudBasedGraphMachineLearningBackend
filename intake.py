@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from shapely.geometry import Polygon
 import compute_rhino3d.Util
 import compute_rhino3d.Grasshopper as gh
-# import rhino3dm
+import rhino3dm
 
 compute_rhino3d.Util.url = "http://localhost:8081/"
 compute_rhino3d.Util.apiKey = ""
@@ -57,22 +57,25 @@ trees = [lineType_tree, vertices_tree, corr_tree, levels_tree]
 # trees = [lineType, vertices, corrType, levels]
 
 trees_data = [tree.data for tree in trees]
-print(trees_data)
+#print(trees_data)
 try:
     output = gh.EvaluateDefinition(defName, trees)
+    # decoding output
+    branch = output['values'][0]['InnerTree']['{0}']
+    nodesAndEdges = {}
+    nodesAndEdges = [rhino3dm.CommonObject.Decode(json.loads(item['data'])) for item in branch]
+
     # string_data = output[0].InnerTree.First().Value[0].Data
     # print(string_data)
-    print(output)
+    print(nodesAndEdges)
 except Exception as e:
     print(f'Error running grasshopper file: {e}.')
-# decode results
-# branch = output['json_string'][0]['InnerTree']['{ 0; }']
-# string = [rhino3dm.CommonObject.Decode(json.loads(output))]
-if output:
+
+if nodesAndEdges:
     # writing JSON data
     with open("assets/output.json", 'w') as f:
         # json.dump(string_data, f)
-        json.dump(output, f)
+        json.dump(nodesAndEdges, f)
 # Convert the dictionary to a JSON string
 # json_string = json.dumps(output, indent=4)
 # json_string = json.dumps(string, indent=4)
