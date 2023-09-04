@@ -58,29 +58,29 @@ trees = [lineType_tree, vertices_tree, corr_tree, levels_tree]
 
 trees_data = [tree.data for tree in trees]
 #print(trees_data)
+
+nodesAndEdges = str()
+output = {}
+decoded_data = {}
+
 try:
     output = gh.EvaluateDefinition(defName, trees)
     # decoding output
-    branch = output['values'][0]['InnerTree']['{0}']
-    nodesAndEdges = {}
-    nodesAndEdges = [rhino3dm.CommonObject.Decode(json.loads(item['data'])) for item in branch]
+    branch = output['values'][0]['InnerTree']['{0}'][0]
+    nodesAndEdges = branch['data']
+    decoded_data = json.loads(nodesAndEdges)
 
-    # string_data = output[0].InnerTree.First().Value[0].Data
-    # print(string_data)
-    print(nodesAndEdges)
+    # print(decoded_data)
+
 except Exception as e:
     print(f'Error running grasshopper file: {e}.')
 
-if nodesAndEdges:
+if output:
+   
+    print("Writing to JSON file with data: ", decoded_data)
     # writing JSON data
-    with open("assets/output.json", 'w') as f:
+    with open("assets/nodesAndEdges.json", 'w') as f:
         # json.dump(string_data, f)
-        json.dump(nodesAndEdges, f)
-# Convert the dictionary to a JSON string
-# json_string = json.dumps(output, indent=4)
-# json_string = json.dumps(string, indent=4)
-# json_string = json.dumps(output)
-
-# Write the JSON string to a file
-# with open("assets/output.json", "w") as json_file:
-#     json_file.write(json_string)
+        # json.dump(swapped_data, f)
+        # f.write(nodesAndEdges)  
+        f.write(decoded_data)      

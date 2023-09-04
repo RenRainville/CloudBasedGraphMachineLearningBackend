@@ -17,7 +17,8 @@ import ghhops_server as hs
 from pyngrok import ngrok
 # import threading
 
-model_path="assets/egress.pt"
+model_path = 'assets/egress.pt'
+file_path = 'assets/nodesAndEdges.json'
 
 # Define intake of json and creation of node and edge, lists of lists, similar to taking them from the .csv into .json from python dict 
 
@@ -37,9 +38,9 @@ def load_nodes_n_edges_json(filename):
         data = json.load(json_file)
 
     # Extract nodes and edges lists from the features key
-    node_data_list = data['features'][0][0]
+    node_data_list = data['features'][0][:]
     print(node_data_list)
-    edge_data_list = data['features'][1][0]
+    edge_data_list = data['features'][1][:]
     print(edge_data_list)
 
     # Extract specific attributes for nodes and edges
@@ -240,9 +241,16 @@ def inductive_node_classifier(nodes,edges):
     predicted_class=evaluate(b_g_dgl,device,loaded_model)
 
     predicted_class_new=[]
-    for i in list(predicted_class):
+    # for tensor in predicted_class:
+    #   for value in tensor:
+    #     predicted_class_new.append(str(value.item()))
+    predicted_class_new=[]
+    for i in list(predicted_class[1]):
       predicted_class_new.append(str(i.item()))
-
+      
+    # predicted_class_new=[]
+    # for i in list(predicted_class):
+    #   predicted_class_new.append(str(i.item()))
     #predicted_class_new=json.dump(list(predicted_class))
     #print(predicted_class)
 
@@ -252,7 +260,7 @@ def node_classifier(nodes=None, edges=None):
 
     # If nodes and edges aren't provided, load them from the JSON
     if nodes is None or edges is None:
-        nodes, edges = load_nodes_n_edges_json('assets/output.json')
+        nodes, edges = load_nodes_n_edges_json(file_path)
 
     return inductive_node_classifier(nodes, edges)
 
