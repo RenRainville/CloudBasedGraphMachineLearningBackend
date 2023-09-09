@@ -6,7 +6,7 @@ import compute_rhino3d.Util
 import compute_rhino3d.Grasshopper as gh
 import rhino3dm
 
-def process_intake(url, api_key, file_path='assets/dataObject.json', defName='assets/FloorPlanGenerator_Combined.gh'):
+def process_intake(url, api_key, data, defName='assets/FloorPlanGenerator_Combined.gh'):
     compute_rhino3d.Util.url = url
     compute_rhino3d.Util.apiKey = api_key
 
@@ -14,14 +14,14 @@ def process_intake(url, api_key, file_path='assets/dataObject.json', defName='as
 
     # file_path = 'assets/dataObject.json'
 
-    try:
-        with open(file_path, 'r') as file:
-            data = json.load(file)
-    except FileNotFoundError:
-        print(f'The file {file_path} was not found.')
+    # try:
+    #     with open(file_path, 'r') as file:
+    #         data = json.load(file)
+    # except FileNotFoundError:
+    #     print(f'The file {file_path} was not found.')
 
-    except json.JSONDecodeError:
-        print(f'Error decoding JSON from {file_path}.')
+    # except json.JSONDecodeError:
+    #     print(f'Error decoding JSON from {file_path}.')
 
 
     try:
@@ -78,11 +78,11 @@ def process_intake(url, api_key, file_path='assets/dataObject.json', defName='as
 
     if output:
     
-        print("Writing to JSON file with data: ", decoded_data)
-        # writing JSON data
-        with open("assets/nodesAndEdges.json", 'w') as f:
-            # json.dump(string_data, f)
-            # json.dump(swapped_data, f)
-            # f.write(nodesAndEdges)  
-            f.write(decoded_data)   
+        # print("Writing to JSON file with data: ", decoded_data)
+        # # writing JSON data
+        # with open("assets/nodesAndEdges.json", 'w') as f:
+        #     # json.dump(string_data, f)
+        #     # json.dump(swapped_data, f)
+        #     # f.write(nodesAndEdges)  
+        #     f.write(decoded_data)   
         return decoded_data   

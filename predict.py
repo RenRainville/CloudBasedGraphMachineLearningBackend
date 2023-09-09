@@ -22,7 +22,7 @@ file_path = 'assets/nodesAndEdges.json'
 
 # Define intake of json and creation of node and edge, lists of lists, similar to taking them from the .csv into .json from python dict 
 
-def load_nodes_n_edges_json(filename):
+def load_nodes_n_edges_json(data):
     """
     Load nodes and edges from a JSON file and return them as lists of lists.
 
@@ -34,8 +34,8 @@ def load_nodes_n_edges_json(filename):
     """
     
     # Read the data from the JSON file
-    with open(filename, 'r') as json_file:
-        data = json.load(json_file)
+    # with open(filename, 'r') as json_file:
+    #     data = json.load(json_file)
 
     # Extract nodes and edges lists from the features key
     node_data_list = data['features'][0][:]
@@ -256,11 +256,9 @@ def inductive_node_classifier(nodes,edges):
 
     return predicted_class_new
 
-def node_classifier(nodes=None, edges=None):
+def node_classifier(data):
 
-    # If nodes and edges aren't provided, load them from the JSON
-    if nodes is None or edges is None:
-        nodes, edges = load_nodes_n_edges_json(file_path)
+    nodes, edges = load_nodes_n_edges_json(data)
 
     return inductive_node_classifier(nodes, edges)
 
@@ -271,5 +269,5 @@ if __name__ == "__main__":
     prediction_dict = {idx: predicted_class for idx, predicted_class in enumerate(predictions)}
     
     # Save the dictionary to a JSON file
-    with open('assets/predicted_classes.json', 'w') as json_file:
-        json.dump(prediction_dict, json_file, indent=4)
+    # with open('assets/predicted_classes.json', 'w') as json_file:
+    #     json.dump(prediction_dict, json_file, indent=4)
