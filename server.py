@@ -9,8 +9,11 @@ from predict import node_classifier
 
 app = Flask(__name__)
 CORS(app)
-url = "http://localhost:8081/"
-api_key = ""
+# url = "http://localhost:8081/"
+# api_key = ""
+
+url = "https://compute-server.iaac.net/"; ##//if debugging locally.
+api_key = "Pujades102"
 
 @app.route('/')
 @app.route('/index')
@@ -19,7 +22,8 @@ def index():
 
 @app.route('/process', methods=['POST'])
 def process_data():
-    data = intake_data()
+    # data = intake_data()
+    data = request.get_json()
     decoded = process_intake(url, api_key, data)
     predictions = node_classifier(decoded)
     
@@ -59,12 +63,12 @@ def process_data():
     # return jsonify(nodes_and_edges)
     return predicted_graph
 
-def intake_data():
-    # Get JSON data from the request
-    data = request.get_json()
-    # with open("assets/dataObject.json", 'w') as json_file:
-    #     json.dump(data, json_file, indent=4)
-    return data
+# def intake_data():
+#     # Get JSON data from the request
+#     data = request.get_json()
+#     # with open("assets/dataObject.json", 'w') as json_file:
+#     #     json.dump(data, json_file, indent=4)
+#     return data
 
 # def execute_json(filename):
 #     with open(filename, "r") as f:
