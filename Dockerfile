@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
 
 # Install pip requirements
 COPY requirements.txt .
+RUN python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
 RUN python -m pip install -r requirements.txt
 
 WORKDIR /app
