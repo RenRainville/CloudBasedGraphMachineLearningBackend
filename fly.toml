@@ -1,10 +1,12 @@
-# fly.toml app configuration file generated for graphpost on 2023-07-27T04:40:57-07:00
+# fly.toml app configuration file generated for graphpost on 2023-09-10T08:56:09-07:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "graphpost"
+app = "graphtestrun"
 primary_region = "sea"
+
+[build]
 
 [http_service]
   internal_port = 8080

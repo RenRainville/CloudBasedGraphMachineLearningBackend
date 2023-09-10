@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from shapely.geometry import Polygon
 import compute_rhino3d.Util
 import compute_rhino3d.Grasshopper as gh
-import rhino3dm
 
 def process_intake(url, api_key, data, defName='assets/FloorPlanGenerator_Combined.gh'):
     compute_rhino3d.Util.url = url
