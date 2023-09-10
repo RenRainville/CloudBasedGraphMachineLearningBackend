@@ -1,0 +1,17 @@
+# fly.toml app configuration file generated for graphtestrun on 2023-09-10T09:18:48-07:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "graphtestrun"
+primary_region = "sea"
+
+[build]
+
+[http_service]
+  internal_port = 5002
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
