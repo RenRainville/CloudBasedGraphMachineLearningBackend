@@ -1,4 +1,5 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, render_template, jsonify
+from flask import request
 from waitress import serve
 # from customPythonFile import customPythonFunction
 from flask_cors import CORS
@@ -6,6 +7,9 @@ from flask_cors import CORS
 # import subprocess
 from intake import process_intake
 from predict import node_classifier
+import json
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 CORS(app)
@@ -23,10 +27,30 @@ def index():
 @app.route('/process', methods=['POST'])
 def process_data():
     # data = intake_data()
-    data = request.get_json()
-    decoded = process_intake(url, api_key, data)
-    predictions = node_classifier(decoded)
+    # print(request.data)
+    # data = request.get_json(force=True)
+    data = json.loads(request.data.decode())
+    # print(f"Received data: {data}")
+    if not data:
+        return jsonify({"error": "Invalid Input"}), 400
     
+    try:
+        decoded = process_intake(url, api_key, data)
+        decoded_json = json.loads(decoded)
+        with open('assets/decoded.json', 'w', encoding='utf-8') as f:
+            json.dump(decoded_json, f, ensure_ascii=False, indent=4)
+    except Exception as e:
+        logging.error(f"An error occured: {e}")
+        return jsonify({"error": "Internal Server error during decode"}), 500
+    # print(type(decoded))
+    # parsed_data = json.loads(decoded)
+    # print(type(parsed_data))
+    try:
+        predictions = node_classifier(decoded_json)
+    except Exception as e:
+        logging.error(f"An error occured: {e}")
+        return jsonify({"error": "Internal Server error during predictions"}), 500
+ 
     # Create a dictionary of node indices and their predicted classes
     prediction_dict = {idx: predicted_class for idx, predicted_class in enumerate(predictions)}
     
@@ -61,7 +85,7 @@ def process_data():
     
     # Return processed data as JSON
     # return jsonify(nodes_and_edges)
-    return predicted_graph
+    return jsonify(predicted_graph)
 
 # def intake_data():
 #     # Get JSON data from the request

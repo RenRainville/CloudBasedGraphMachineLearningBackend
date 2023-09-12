@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import dgl
 from dgl.nn import SAGEConv
 
-# import json
+import json
 # import math
 import networkx as nx
 
@@ -21,7 +21,7 @@ file_path = 'assets/nodesAndEdges.json'
 
 # Define intake of json and creation of node and edge, lists of lists, similar to taking them from the .csv into .json from python dict 
 
-def load_nodes_n_edges_json(data):
+def load_nodes_n_edges_json(json_string):
     """
     Load nodes and edges from a JSON file and return them as lists of lists.
 
@@ -35,7 +35,7 @@ def load_nodes_n_edges_json(data):
     # Read the data from the JSON file
     # with open(filename, 'r') as json_file:
     #     data = json.load(json_file)
-
+    data = json.loads(json_string)
     # Extract nodes and edges lists from the features key
     node_data_list = data['features'][0][:]
     print(node_data_list)
