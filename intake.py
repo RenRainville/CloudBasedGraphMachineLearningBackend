@@ -24,12 +24,16 @@ def process_intake(url, api_key, data, defName='assets/FloorPlanGenerator_Combin
 
 
     try:
-        lineType = data['geometry']['type']
-        # print(lineType)
-        lineType_tree = gh.DataTree('RH_IN:lineType')
-        lineType_tree.Append([0], [lineType])
-        # lineType = lineType_tree
-
+        if 'geometry' in data and 'type' in data['geometry']:
+            
+            lineType = data['geometry']['type']
+            # print(lineType)
+            lineType_tree = gh.DataTree('RH_IN:lineType')
+            lineType_tree.Append([0], [lineType])
+            # lineType = lineType_tree
+        else:
+            print(f'expected keys not found in data')
+            
         vertices = data['geometry']['coordinates'][0:]
         # print(vertices)
         vertices_tree = gh.DataTree('RH_IN:vertices')

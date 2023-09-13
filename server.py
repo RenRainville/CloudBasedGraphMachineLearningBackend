@@ -34,17 +34,28 @@ def process_data():
     if not data:
         return jsonify({"error": "Invalid Input"}), 400
     
+    # print(f"data type is:"+str(type(data)))
+    
     try:
         decoded = process_intake(url, api_key, data)
-        decoded_json = json.loads(decoded)
+    except Exception as e:
+        logging.error(f"An Error occured during process_intake: {e}")
+
+    # print(f"decoded type is:"+str(type(decoded)))
+    # print(decoded[134194:134294])
+        
+    try:
+        decoded_json = json.dumps(decoded)
         with open('assets/decoded.json', 'w', encoding='utf-8') as f:
             json.dump(decoded_json, f, ensure_ascii=False, indent=4)
     except Exception as e:
         logging.error(f"An error occured: {e}")
         return jsonify({"error": "Internal Server error during decode"}), 500
-    # print(type(decoded))
+    
+
     # parsed_data = json.loads(decoded)
-    # print(type(parsed_data))
+    print(f"decoded_json type is:"+str(type(decoded_json)))
+    
     try:
         predictions = node_classifier(decoded_json)
     except Exception as e:
@@ -53,7 +64,7 @@ def process_data():
  
     # Create a dictionary of node indices and their predicted classes
     prediction_dict = {idx: predicted_class for idx, predicted_class in enumerate(predictions)}
-    
+    # print(f"prediction_dict type is:"+str(type(prediction_dict)))
     # Save the dictionary to a JSON file
     # with open('assets/predicted_classes.json', 'w') as json_file:
     #     json.dump(prediction_dict, json_file, indent=4)
@@ -65,14 +76,23 @@ def process_data():
     #     nodes_and_edges = json.load(file)
         # print(type(nodes_and_edges))
         # Iterate over the nodes in nodesAndEdges and add the predicted class
-    for node in decoded['features'][0]:
-        # print(type(node))
+    corrected_decode_json_string = decoded_json.replace('False', 'false').replace('True', 'true')
+
+    data = json.loads(corrected_decode_json_string)
+    if isinstance(data, str):
+      dedecoded_json = json.loads(data)
+    
+    # dedecoded_json = json.loads(decoded_json)
+    print(f"dedecoded_json NEW type is:"+str(type(dedecoded_json)))
+    
+    for node in dedecoded_json['features']:
+        # print(f"node in decoded_json['features'] is type:"+str(type(node)))
         # node_id = str(node[0]['properties']['label'])
         # if node_id in processed_data:
         #     node['properties']['predictedClass'] = processed_data[node_id]
         # print(node)
         if 'node' in node and 'properties' in node['node'] and 'label' in node['node']['properties']:
-            node_id = str(node['node']['properties']['label'])
+            node_id = node['node']['properties']['label']
             if node_id in prediction_dict:
                 node['node']['properties']['predictedClass'] = prediction_dict[node_id]
                 print(f"Added predictedClass for node_id: {node_id}")
@@ -81,7 +101,7 @@ def process_data():
         # Write the combined data back to nodesAndEdges.json (or a new file if you prefer)
     # with open('assets/predictedGraph.json', 'w') as file:
     #     json.dump(nodes_and_edges, file, indent=4)
-    predicted_graph = decoded
+    predicted_graph = dedecoded_json
     
     # Return processed data as JSON
     # return jsonify(nodes_and_edges)

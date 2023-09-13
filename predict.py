@@ -17,7 +17,7 @@ from pyngrok import ngrok
 # import threading
 
 model_path = 'assets/egress.pt'
-file_path = 'assets/nodesAndEdges.json'
+# file_path = 'assets/nodesAndEdges.json'
 
 # Define intake of json and creation of node and edge, lists of lists, similar to taking them from the .csv into .json from python dict 
 
@@ -35,12 +35,34 @@ def load_nodes_n_edges_json(json_string):
     # Read the data from the JSON file
     # with open(filename, 'r') as json_file:
     #     data = json.load(json_file)
-    data = json.loads(json_string)
+    corrected_json_string = json_string.replace('False', 'false').replace('True', 'true')
+
+    data = json.loads(corrected_json_string)
+    if isinstance(data, str):
+      data = json.loads(data)
+
+    # print(f'data["features"] after json.loads type is:'+str(type(data['features'])))
+    # print(data[2][0:150])
     # Extract nodes and edges lists from the features key
-    node_data_list = data['features'][0][:]
-    print(node_data_list)
-    edge_data_list = data['features'][1][:]
-    print(edge_data_list)
+    # node_data_list = data['features'][0]
+    # print(f"node_data_list type is:"+str(type(node_data_list)))
+    # print(node_data_list)
+    # edge_data_list = data['features'][1]
+    # print(edge_data_list)
+    
+    # node_data_list = []
+    # edge_data_list = []
+
+    # for feature in data['features']:
+    #     if 'node' in feature:
+    #         node_data_list.append(feature['node'])
+    #     elif 'edge' in feature:
+    #         edge_data_list.append(feature['edge'])
+    node_data_list = [feature for feature in data['features'] if 'node' in feature]
+    edge_data_list = [feature for feature in data['features'] if 'edge' in feature]
+
+    # print(f"node_data_list type is:"+str(type(node_data_list)))
+    # print(node_data_list)
 
     # Extract specific attributes for nodes and edges
     node_data = [[
@@ -256,9 +278,10 @@ def inductive_node_classifier(nodes,edges):
     return predicted_class_new
 
 def node_classifier(data):
-
+    # print(f"in Node Classifier data type is:" + str(type(data)))
+    
     nodes, edges = load_nodes_n_edges_json(data)
-
+      
     return inductive_node_classifier(nodes, edges)
 
 if __name__ == "__main__":
