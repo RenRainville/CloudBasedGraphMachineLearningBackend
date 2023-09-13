@@ -1,14 +1,15 @@
-# fly.toml app configuration file generated for graphtestrun on 2023-09-10T09:34:34-07:00
+# fly.toml app configuration file generated for graphmlwebapp on 2023-09-13T15:32:09-07:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "graphtestrun"
+app = "graphmlwebapp"
 primary_region = "sea"
 
 [build]
-  ignorefile = '.dockerignore'
-  
+
+[env]
+
 [http_service]
   internal_port = 5002
   force_https = true
@@ -18,5 +19,5 @@ primary_region = "sea"
   processes = ["app"]
   [http_service.concurrency]
     type = "requests"
-    soft_limit = 200
     hard_limit = 250
+    soft_limit = 200

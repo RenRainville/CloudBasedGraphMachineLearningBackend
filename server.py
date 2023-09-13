@@ -5,6 +5,8 @@ from waitress import serve
 from flask_cors import CORS
 # import json
 # import subprocess
+from dotenv import load_dotenv
+import os
 from intake import process_intake
 from predict import node_classifier
 import json
@@ -16,8 +18,10 @@ CORS(app)
 # url = "http://localhost:8081/"
 # api_key = ""
 
+load_dotenv()
+
 url = "https://compute-server.iaac.net/"; ##//if debugging locally.
-api_key = "Pujades102"
+api_key = {os.getenv("api_key")}
 
 @app.route('/')
 @app.route('/index')
