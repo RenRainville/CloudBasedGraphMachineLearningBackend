@@ -9,20 +9,6 @@ def process_intake(url, api_key, data, defName='assets/FloorPlanGenerator_Combin
     compute_rhino3d.Util.url = url
     compute_rhino3d.Util.apiKey = api_key
 
-    # defName = 'assets/FloorPlanGenerator_Combined.gh'
-
-    # file_path = 'assets/dataObject.json'
-
-    # try:
-    #     with open(file_path, 'r') as file:
-    #         data = json.load(file)
-    # except FileNotFoundError:
-    #     print(f'The file {file_path} was not found.')
-
-    # except json.JSONDecodeError:
-    #     print(f'Error decoding JSON from {file_path}.')
-
-
     try:
         if 'geometry' in data and 'type' in data['geometry']:
             
@@ -58,10 +44,6 @@ def process_intake(url, api_key, data, defName='assets/FloorPlanGenerator_Combin
         print(f'Error constructing DataTree: {e}.')
 
     trees = [lineType_tree, vertices_tree, corr_tree, levels_tree]
-    # trees = [lineType, vertices, corrType, levels]
-
-    # trees_data = [tree.data for tree in trees]
-    #print(trees_data)
 
     nodesAndEdges = str()
     output = {}
@@ -83,30 +65,6 @@ def process_intake(url, api_key, data, defName='assets/FloorPlanGenerator_Combin
 
 
     if output:
-    
-        # print("Writing to JSON file with data: ", decoded_data)
-        # # writing JSON data
-        # with open("assets/nodesAndEdges.json", 'w') as f:
-        #     # json.dump(string_data, f)
-        #     # json.dump(swapped_data, f)
-        #     # f.write(nodesAndEdges)  
-        #     f.write(decoded_data)   
+     
         return decoded_data   
     return None
-
-# url = "https://compute-server.iaac.net/"; ##//if debugging locally.
-# api_key = "Pujades102"
-
-# file_path = 'assets/dataObject.json'
-
-# try:
-#     with open(file_path, 'r') as file:
-#         data = json.load(file)
-# except FileNotFoundError:
-#     print(f'The file {file_path} was not found.')
-
-# except json.JSONDecodeError:
-#     print(f'Error decoding JSON from {file_path}.')
-
-# process_data = process_intake(url,api_key,data)
-# print(process_data)
