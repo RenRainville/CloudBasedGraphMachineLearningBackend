@@ -8,8 +8,6 @@ primary_region = "sea"
 
 [build]
 
-[env]
-
 [http_service]
   internal_port = 5002
   force_https = true

@@ -21,7 +21,7 @@ CORS(app)
 load_dotenv()
 
 url = "https://compute-server.iaac.net/"; ##//if debugging locally.
-api_key = {os.getenv("api_key")}
+api_key = os.getenv("api_key")
 
 @app.route('/')
 @app.route('/index')
