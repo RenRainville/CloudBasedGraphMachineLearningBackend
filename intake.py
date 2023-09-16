@@ -68,7 +68,7 @@ def process_intake(url, api_key, data, defName='assets/FloorPlanGenerator_Combin
     try:
         output = gh.EvaluateDefinition(defName, trees)
         # decoding output
-        print(output)
+        # print(output)
         # print(nodesAndEdges)
         # print(f"nodesAndeEdges type is:"+type(nodesAndEdges))
         # print(f"decoded_data type is:"+type(decoded_data))
